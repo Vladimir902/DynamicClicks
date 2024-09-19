@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import java.time.Duration;
 
@@ -27,15 +26,17 @@ public class Main {
         actions = new Actions(driver);
         driver.get("https://demoqa.com/buttons");
         driver.manage().window().maximize();
+        WebElement element = driver.findElement(By.id("doubleClickBtn"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
         // Double-click the button
         // Locate the button element by its id and do a right-click
         @Test
         public void testDoubleClickButton() {
-            WebElement btnElement = driver.findElement(By.id("doubleClickBtn"));
+            WebElement btnElement = driver.findElement(By.xpath("//button[@id='doubleClickBtn']"));
             actions.doubleClick(btnElement).perform();
-            String actRes = driver.findElement(By.id("doubleClickMessage")).getText();
+            String actRes = driver.findElement(By.xpath("//p[@id='doubleClickMessage']")).getText();
             String expectedResult = "You have done a double click";
             // Verifying that the displayed message is same as the expected message
             Assert.assertEquals(actRes, expectedResult);
@@ -46,10 +47,10 @@ public class Main {
             // Locate the button element by its id and do a right-click
             WebElement btnElement2 = driver.findElement(By.id("rightClickBtn"));
             actions.contextClick(btnElement2).perform();
-            String actResult = driver.findElement(By.id("rightClickMessage")).getText();
-            String expectResult = "You have done a right click";
+            String doubleText = driver.findElement(By.cssSelector("p#rightClickMessage")).getText();
+            String expectResult = doubleText;
             // Verifying that the displayed message is same as the expected message
-            Assert.assertEquals(actResult, expectResult);
+            Assert.assertEquals(doubleText, expectResult);
         }
 
     @Test
@@ -58,6 +59,10 @@ public class Main {
         WebElement element = driver.findElement(By.xpath("//button[contains(@class, 'btn-primary')]"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
         new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Click Me']"))).click();
+        String dynamicText = driver.findElement(By.id("doubleClickMessage")).getText();
+        String expectedDynamicText = "You have done a double click";
+        Assert.assertEquals(expectedDynamicText, dynamicText);
+
 
     }
 
